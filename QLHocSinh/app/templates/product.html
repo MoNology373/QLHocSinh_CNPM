@@ -1,0 +1,48 @@
+{% extends "base/base.html" %}
+{% block title %}QUẢN LÍ SẢN PHẨM{% endblock %}
+{% block link %}
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" rel="stylesheet">
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <table class="table">
+            <tr class="title">
+                <td>
+                    <p>Tên</p>
+                </td>
+                <td>
+                    <p>Đặc điểm</p>
+                </td>
+                <td>
+                    <p>Toán</p>
+                </td>
+                <td>
+                    <p>Lý</p>
+                </td>
+                <td>
+                    <p>Hóa</p>
+                </td>
+
+            </tr>
+            {% for p in products %}
+            <tr>
+                <td>
+                    <p>{{ p.name }}</p>
+                </td>
+                <td>
+                    <p>{{ p.description }}</p>
+                </td>
+                <td>
+                    <p>{{ p.math }}</p>
+                </td>
+                <td>
+                    <p>{{ p.physic }}</p>
+                </td>
+                <td>
+                    <p>{{ p.chemistry }}</p>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

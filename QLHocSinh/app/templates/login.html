@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập</title>
+
+    <link href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}" rel="stylesheet">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+
+
+
+    <link href="{{ url_for('static', filename='css/login.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="card-wrap">
+          <div class="card border-0 shadow card--welcome is-show" id="welcome">
+            <div class="card-body">
+              <h2 class="card-title">WELCOME</h2>
+              <p>Welcome to the login page</p>
+              <div class="btn-wrap">
+                  <a href="login-teacher" class="btn btn-lg btn-teacher js-btn" data-target="teacher">TEACHER</a>
+                  <a href="login-admin" class="btn btn-lg btn-login js-btn" data-target="login">ADMIN</a>
+              </div>
+            </div>
+          </div>
+          <div class="card border-0 shadow card--teacher" id="teacher">
+            <div class="card-body">
+              <h2 class="card-title">Welcome Back!</h2>
+              <p>Login for teacher</p>
+              <form>
+                <div class="form-group">
+                  <input class="form-control" type="text" placeholder="Email" required="required"/>
+                </div>
+                <div class="form-group">
+                  <input class="form-control" type="password" placeholder="Password" required="required"/>
+                </div>
+                <button class="btn btn-lg">LOGIN</button>
+              </form>
+            </div>
+            <button class="btn btn-back js-btn" data-target="welcome"><i class="fas fa-angle-left"></i></button>
+          </div>
+          <div class="card border-0 shadow card--login" id="login">
+            <div class="card-body">
+              <h2 class="card-title">Welcome Back!</h2>
+              <p>Login for admin</p>
+              <form>
+                <div class="form-group">
+                  <input class="form-control" type="text" placeholder="Email" required="required"/>
+                </div>
+                <div class="form-group">
+                  <input class="form-control" type="password" placeholder="Password" required="required"/>
+                </div>
+                <button class="btn btn-lg">LOGIN</button>
+              </form>
+            </div>
+            <button class="btn btn-back js-btn" data-target="welcome"><i class="fas fa-angle-left"></i></button>
+          </div>
+        </div>
+      </div>
+
+</body>
+  <script src="static/script/login.js"></script>
+</html>
