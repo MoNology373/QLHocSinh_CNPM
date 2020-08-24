@@ -33,7 +33,6 @@ class Student(db.Model):
         return self.name
 
 
-
 admin.add_view(ModelView(Class, db.session))
 admin.add_view(ModelView(Student, db.session))
 
