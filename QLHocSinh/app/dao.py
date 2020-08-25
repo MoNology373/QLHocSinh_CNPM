@@ -1,7 +1,6 @@
 import hashlib
 import json
 import os
-
 from app import app
 
 
