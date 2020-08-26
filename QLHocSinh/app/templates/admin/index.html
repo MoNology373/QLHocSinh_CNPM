@@ -1,11 +1,114 @@
 {% extends 'admin/master.html' %}
 {% block head_css %}
-    {{ super() }}
+{{ super() }}
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" rel="stylesheet">
+    <script crossorigin="anonymous" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+        <!---------Date--------->
+    <link rel="stylesheet prefetch" href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css"><script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+
+    <link href="{{ url_for('static', filename='css/submit.css') }}" rel="stylesheet">
 {% endblock %}
 {% block body %}
     {% if current_user.is_authenticated %}
-        <h1>WELCOME TO THE ADMIN PAGE</h1>
-        <h1>{{ current_user.name }}</h1>
+    <div class="slideshow-container">
+        <div class="mySlides fade">
+          <div class="numbertext">1 / 3</div>
+          <img src="images/slide11.jpg" style="width:100%">
+          <!-- <div class="text">Caption Text</div> -->
+        </div>
+
+        <div class="mySlides fade">
+          <div class="numbertext">2 / 3</div>
+          <img src="images/slide22.jpg" style="width:100%">
+          <!-- <div class="text">Caption Two</div> -->
+        </div>
+
+        <div class="mySlides fade">
+          <div class="numbertext">3 / 3</div>
+          <img src="images/slide33.jpg" style="width:100%">
+          <!-- <div class="text">Caption Three</div> -->
+        </div>
+
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+
+        </div>
+        <br>
+
+        <div style="text-align:center">
+          <span class="dot" onclick="currentSlide(1)"></span>
+          <span class="dot" onclick="currentSlide(2)"></span>
+          <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+
+        <br>
+        <!-- Danh sách -->
+        <form class="content needs-validation">
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="firstName">First Name:</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="firstName" placeholder="First Name" required>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="lastName">Last Name:</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="lastName" placeholder="Last Name" required>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="inputClass">Class:</label>
+                <div class="col-sm-9">
+                    <input type="class" class="form-control" id="inputClass" placeholder="Class" required>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="address">Address:</label>
+                <div class="col-sm-9">
+                    <input type="address" class="form-control" id="address" placeholder="Address" required>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="inputEmail">Email Address:</label>
+                <div class="col-sm-9">
+                    <input type="email" class="form-control" id="inputEmail" placeholder="Email Address" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Date of Birth:</label>
+                <div id="datepicker" class="input-group date" data-date-format="dd-mm-yyyy"> <input class="form-control" readonly="" type="text"> <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                </div>
+
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Gender:</label>
+                <div class="col-sm-9 mt-2">
+                    <label class="mb-0 mr-3">
+                        <input type="radio" class="mr-1" name="gender"> Male
+                    </label>
+                    <label class="mb-0 mr-3">
+                        <input type="radio" class="mr-1" name="gender"> Female
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-9 offset-sm-3">
+                    <input type="submit" class="btn btn-primary" value="Submit">
+                    <input type="reset" class="btn btn-secondary" value="Reset">
+                </div>
+            </div>
+        </form>
     {% else %}
         {% include 'admin/login.html' %}
     {% endif %}
