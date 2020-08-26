@@ -39,19 +39,31 @@ def unauthorized():
 
 @app.route('/login-admin', methods=['POST', 'GET'])
 def login_admin():
-    useradmin = 1
     if request.method == 'POST':
         username = request.form.get("username")
         password = request.form.get("password", "")
         password = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())
         user = User.query.filter(User.username == username.strip(),
                                  User.password == password.strip(),
-                                 User.admin == useradmin).first()
+                                 User.admin == 1).first()
         if user:
             login_user(user=user)
         else:
             flash("Wrong password or account.")
     return redirect("/admin")
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('name')
+        password = request.form.get('password')
+        user = User.query.filter(User.username == username.strip(),
+                                 User.password == password,
+                                 User.admin == 0).first()
+        if user:
+            login_user(user=user)
+    return redirect(url_for('index'))
 
 
 @app.route('/submit')
@@ -70,16 +82,7 @@ def product():
 @login_required
 def score():
     return render_template("score.html")
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if request.method == 'POST':
-#         username = request.form.get('name')
-#         password = request.form.get('password')
-#         user = User.query.filter(User.username == username.strip(),
-#                                  User.password == password).first()
-#         if user:
-#             login_user(user=user)
-#     return redirect(url_for('index'))
+
 
 
 @app.route('/logout')
