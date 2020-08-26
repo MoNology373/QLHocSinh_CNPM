@@ -30,11 +30,10 @@ def user_load(user_id):
 
 
 @login.unauthorized_handler
-def unauthorized():
+def unauthorized_admin():
     print ('unauthorized')
     flash("You must be logged in.")
     return redirect(url_for("login_admin"))
-
 
 
 @app.route('/login-admin', methods=['POST', 'GET'])
@@ -43,13 +42,13 @@ def login_admin():
         username = request.form.get("username")
         password = request.form.get("password", "")
         password = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())
-        user = User.query.filter(User.username == username.strip(),
-                                 User.password == password.strip(),
-                                 User.admin == 1).first()
+        user = User.query.filter(User.admin == 1,
+                                 User.username == username.strip(),
+                                 User.password == password.strip()).first()
         if user:
             login_user(user=user)
         else:
-            flash("Wrong password or account.")
+            flash("Wrong account or password .")
     return redirect("/admin")
 
 
@@ -57,12 +56,14 @@ def login_admin():
 def login():
     if request.method == 'POST':
         username = request.form.get('name')
-        password = request.form.get('password')
+        password = request.form.get('password', '')
         user = User.query.filter(User.username == username.strip(),
                                  User.password == password,
                                  User.admin == 0).first()
         if user:
             login_user(user=user)
+        else:
+            flash("Wrong password or account.")
     return redirect(url_for('index'))
 
 
