@@ -52,19 +52,18 @@ def login_admin():
     return redirect("/admin")
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form.get('name')
-        password = request.form.get('password', '')
-        user = User.query.filter(User.username == username.strip(),
-                                 User.password == password,
-                                 User.admin == 0).first()
-        if user:
-            login_user(user=user)
-        else:
-            flash("Wrong password or account.")
-    return redirect(url_for('index'))
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     if request.method == 'POST':
+#         username = request.form.get('name')
+#         password = request.form.get('password', '')
+#         user = User.query.filter(User.username == username.strip(),
+#                                  User.password == password).first()
+#         if user:
+#             login_user(user=user)
+#         else:
+#             flash("Wrong password or account.")
+#     return redirect(url_for('index'))
 
 
 @app.route('/submit')
