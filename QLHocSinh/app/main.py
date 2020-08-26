@@ -1,7 +1,7 @@
 import hashlib
 from functools import wraps
 
-from flask import render_template, session, request, url_for
+from flask import render_template, session, request, url_for, flash
 from flask_login import login_user, login_required
 
 from app import app, login
@@ -29,16 +29,26 @@ def user_load(user_id):
     return User.query.get(user_id)
 
 
+@login.unauthorized_handler
+def unauthorized():
+    print ('unauthorized')
+    flash("You must be logged in.")
+    return redirect(url_for("login_admin"))
+
+
+
 @app.route('/login-admin', methods=['POST', 'GET'])
 def login_admin():
     if request.method == 'POST':
         username = request.form.get("username")
         password = request.form.get("password", "")
-        password = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())
+        # password = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())
         user = User.query.filter(User.username == username.strip(),
                                  User.password == password).first()
         if user:
             login_user(user=user)
+        else:
+            flash("Wrong password.")
     return redirect("/admin")
 
 
@@ -73,8 +83,8 @@ def score():
 @app.route('/logout')
 @login_required
 def logout():
-    session["user"] = None
-    return redirect(url_for('login'))
+    logout_user()
+    return redirect(url_for('login_admin'))
 
 
 @app.route("/login-failed", methods=['post', 'get'])

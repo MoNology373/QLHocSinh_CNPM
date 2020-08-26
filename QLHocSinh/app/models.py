@@ -14,7 +14,7 @@ class User(db.Model, UserMixin):
     active = Column(Boolean, default=True)
     username = Column(String(50), nullable=False)
     password = Column(String(500), nullable=False)
-
+    admin = Column(String(50), nullable=False)
     def __str__(self):
         return self.name
 
