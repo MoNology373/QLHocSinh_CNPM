@@ -28,9 +28,10 @@ CREATE TABLE `user` (
   `active` tinyint(1) DEFAULT NULL,
   `username` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `admin` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `user_chk_1` CHECK ((`active` in (0,1)))
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +40,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Nam',1,'admin','202cb962ac59075b964b07152d234b70');
+INSERT INTO `user` VALUES (1,'Nam',1,'admin','202cb962ac59075b964b07152d234b70','1'),(2,'Tri',1,'Tri','caf1a3dfb505ffed0d024130f58c5cfa','0');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-25 13:44:49
+-- Dump completed on 2020-08-26 19:35:51
