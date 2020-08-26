@@ -42,6 +42,22 @@ def login_admin():
     return redirect("/admin")
 
 
+@app.route('/submit')
+@login_required
+def submit():
+    return render_template("submit.html")
+
+
+@app.route('/product')
+@login_required
+def product():
+    return render_template("product.html")
+
+
+@app.route('/score')
+@login_required
+def score():
+    return render_template("score.html")
 # @app.route('/login', methods=['GET', 'POST'])
 # def login():
 #     if request.method == 'POST':
