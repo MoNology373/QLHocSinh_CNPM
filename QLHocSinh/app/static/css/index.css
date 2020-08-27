@@ -1,0 +1,38 @@
+body {
+  /*margin: 0;*/
+  font-family: Arial, Helvetica, sans-serif;
+  background:linear-gradient(to right, #ffdde1, #ee9ca7, #a7bfe8, #6190e8);
+  background-size:00% 500%;
+  transition: 3s ease;
+  /*background-position:50% 50%;*/
+}
+
+/*menu slide*/
+
+.mySlides {
+    display: none;
+    margin-top: 20px;
+    border-radius: 15px;
+}
+
+.slideshow-container{
+    max-width: 700px;
+    position: relative;
+    margin: auto;
+}
+
+.carousel-inner > .item {
+    transition-duration: 3s;
+}
+
+/*Content 2*/
+#about-text > p{
+    font-size: 26px;
+}
+/*Content 3*/
+.container-fluid{
+    margin-top: 5%
+}
+
+
+
