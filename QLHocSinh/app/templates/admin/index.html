@@ -3,15 +3,6 @@
 {{ super() }}
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" rel="stylesheet">
-    <script crossorigin="anonymous" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" src="https://code.jquery.com/jquery-3.5.1.js"></script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-
-        <!---------Date--------->
-    <link rel="stylesheet prefetch" href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css"><script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
 
     <link href="{{ url_for('static', filename='css/submit.css') }}" rel="stylesheet">
     <script src="{{ url_for('static', filename='script/submit.js') }}" rel="stylesheet"></script>
@@ -19,21 +10,21 @@
 {% block body %}
     {% if current_user.is_authenticated %}
     <div class="slideshow-container">
-        <div class="mySlides fade">
+        <div class="mySlides">
           <div class="numbertext">1 / 3</div>
-          <img src="{{ url_for('static', filename='images/slide11.jpg') }}" style="width:100%">
+          <img src="{{ url_for('static', filename='images/slide4.jpg') }}" style="width:100%">
           <!-- <div class="text">Caption Text</div> -->
         </div>
 
-        <div class="mySlides fade">
+        <div class="mySlides">
           <div class="numbertext">2 / 3</div>
-          <img src="{{ url_for('static', filename='images/slide22.jpg') }}" style="width:100%">
+          <img src="{{ url_for('static', filename='images/slide2.jpg') }}" style="width:100%">
           <!-- <div class="text">Caption Two</div> -->
         </div>
 
-        <div class="mySlides fade">
+        <div class="mySlides">
           <div class="numbertext">3 / 3</div>
-          <img src="{{ url_for('static', filename='images/slide33.jpg') }}" style="width:100%">
+          <img src="{{ url_for('static', filename='images/slide3.jpg') }}" style="width:100%">
           <!-- <div class="text">Caption Three</div> -->
         </div>
 
@@ -50,65 +41,117 @@
         </div>
 
         <br>
-        <!-- Danh sách -->
-        <form class="content needs-validation">
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="firstName">First Name:</label>
-                <div class="col-sm-9">
-                    <input type="text" class="form-control" id="firstName" placeholder="First Name" required>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="lastName">Last Name:</label>
-                <div class="col-sm-9">
-                    <input type="text" class="form-control" id="lastName" placeholder="Last Name" required>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="inputClass">Class:</label>
-                <div class="col-sm-9">
-                    <input type="class" class="form-control" id="inputClass" placeholder="Class" required>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="address">Address:</label>
-                <div class="col-sm-9">
-                    <input type="address" class="form-control" id="address" placeholder="Address" required>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="inputEmail">Email Address:</label>
-                <div class="col-sm-9">
-                    <input type="email" class="form-control" id="inputEmail" placeholder="Email Address" required>
-                </div>
-            </div>
+        <!-- Content -->
 
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Date of Birth:</label>
-                <div id="datepicker" class="input-group date" data-date-format="dd-mm-yyyy"> <input class="form-control" readonly="" type="text"> <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                </div>
 
-            </div>
+<div class="mt-5"></div>
+<section class="py-5 bg-light">
+<div class="container my-5">
+	<div class="row">
+		<div class="col-md-6">
+		    <h2 class="pb-3">About the University</h2>
+		    <P>This is where legends are made.
 
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Gender:</label>
-                <div class="col-sm-9 mt-2">
-                    <label class="mb-0 mr-3">
-                        <input type="radio" class="mr-1" name="gender"> Male
-                    </label>
-                    <label class="mb-0 mr-3">
-                        <input type="radio" class="mr-1" name="gender"> Female
-                    </label>
-                </div>
-            </div>
+We provide a creative, nurturing campus environment where our students can become the best individuals possible, learn from the best and brightest faculty, and make a positive difference in the community, the state and the world. You’ll like what you find here.</P>
+            <button type="btn" class="btn btn-danger ">See more</button>
 
-            <div class="form-group row">
-                <div class="col-sm-9 offset-sm-3">
-                    <input type="submit" class="btn btn-primary" value="Submit">
-                    <input type="reset" class="btn btn-secondary" value="Reset">
-                </div>
-            </div>
-        </form>
+		</div>
+		<div class="col-md-6">
+		    <div class="row">
+		        <div class="col-md-6">
+		            <img src="{{ url_for('static', filename='images/pic1.jpg') }}" style="width:100%">
+		            <h2 class="pt-3">We Research</h2>
+		            <p>We have welcomed thousands of students to our events, and host them at some of the UK’s most iconic stadiums.</p>
+		        </div>
+		        <div class="col-md-6">
+		            <img src="{{ url_for('static', filename='images/pic3.jpg') }}" style="width:100%">
+		            <h2 class="pt-3">Our Goals</h2>
+		            <p>Provide a premier undergraduate and graduate education that offers a global perspective and is characterized by outstanding teaching, high-quality scholarship.</p>
+		        </div>
+		    </div>
+		    <div class="row">
+		        <div class="col-md-6">
+		            <img src="{{ url_for('static', filename='images/pic2.jpg') }}" style="width:100%">
+		            <h2 class="pt-3">Plan</h2>
+		            <p>Enhance the recruitment, hiring and retention of diverse faculty, staff and administrators.</p>
+		        </div>
+		        <div class="col-md-6">
+		            <img src="{{ url_for('static', filename='images/pic4.jpg') }}" style="width:100%">
+		            <h2 class="pt-3">Results</h2>
+		            <p>Provide opportunities and resources that facilitate work-life balance and enhance the recruitment and retention of outstanding faculty and staff.</p>
+		        </div>
+		    </div>
+		</div>
+	</div>
+</div>
+</section>
+
+<div class="container-fluid bg-grey">
+  <div class="row">
+    <div class="col-sm-4">
+      <img src="{{ url_for('static', filename='images/global.jpg') }}" style="width:70%">
+    </div>
+    <div class="col-sm-8">
+      <h2>Our Values</h2><br>
+      <h4><strong>MISSION:</strong>World Mission University empowers people through transformational biblical education to serve the church and impact the world for Christ. We strives for excellence in the service of Jesus Christ, under the guidance and power of the Holy Spirit, to the glory of God.</h4><br>
+      <p><strong>VISION:</strong>Cornell aspires to be the exemplary comprehensive research university for the 21st century. Faculty, staff and students thrive at Cornell because of its unparalleled combination of quality and breadth; its open, collaborative and innovative culture; and its land-grant legacy of public engagement.</p>
+    </div>
+  </div>
+</div>
+
+<br>
+
+<div id="services" class="container-fluid text-center">
+  <h2>SERVICES</h2>
+  <h4>What we offer</h4>
+  <br>
+  <div class="row slideanim">
+    <div class="col-sm-4">
+      <span class="glyphicon glyphicon-off logo-small"></span>
+      <h4>POWER</h4>
+      <p>Having a successful start to life</p>
+    </div>
+    <div class="col-sm-4">
+      <span class="glyphicon glyphicon-heart logo-small"></span>
+      <h4>LOVE</h4>
+      <p>Love is the sweetest thing</p>
+    </div>
+    <div class="col-sm-4">
+      <span class="glyphicon glyphicon-lock logo-small"></span>
+      <h4>JOB DONE</h4>
+      <p>Some part-time jobs is important</p>
+    </div>
+  </div>
+  <br><br>
+  <div class="row slideanim">
+    <div class="col-sm-4">
+      <span class="glyphicon glyphicon-leaf logo-small"></span>
+      <h4>GREEN</h4>
+      <p>Cool environment, repelling covid work</p>
+    </div>
+    <div class="col-sm-4">
+      <span class="glyphicon glyphicon-certificate logo-small"></span>
+      <h4>CERTIFIED</h4>
+      <p>Quality meets online degree programs</p>
+    </div>
+    <div class="col-sm-4">
+      <span class="glyphicon glyphicon-wrench logo-small"></span>
+      <h4 style="color:#303030;">HARD WORK</h4>
+      <p>Lorem ipsum dolor sit amet..</p>
+    </div>
+  </div>
+</div>
+
+<br>
+<br>
+<div class="copyright bg-light border pt-2">
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <p> © 2018 xyz Software Pvt. Ltd. </p>
+        </div>
+    </div>
+</div>
+
     {% else %}
         {% include 'admin/login.html' %}
     {% endif %}
