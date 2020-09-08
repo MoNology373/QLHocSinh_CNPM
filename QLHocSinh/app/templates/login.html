@@ -22,43 +22,43 @@
               <h2 class="card-title">WELCOME</h2>
               <p>Welcome to the login page</p>
               <div class="btn-wrap">
-<!--                  <a class="btn btn-lg btn-teacher js-btn" data-target="teacher">TEACHER</a>-->
+                  <a class="btn btn-lg btn-teacher js-btn" data-target="teacher">TEACHER</a>
                   <a class="btn btn-lg btn-login js-btn" data-target="login">ADMIN</a>
               </div>
             </div>
           </div>
 
-<!--            Form login TEACHER-->
-<!--          <div class="card border-0 shadow card&#45;&#45;teacher" id="teacher">-->
-<!--            <div class="card-body">-->
-<!--              <h2 class="card-title">Welcome Back!</h2>-->
-<!--              <p>Login for teacher</p>-->
-<!--              <form method="post">-->
-<!--                <div class="form-group">-->
-<!--                  <input class="form-control" type="text" placeholder="Username" required="required"/>-->
-<!--                </div>-->
-<!--                <div class="form-group">-->
-<!--                  <input class="form-control" type="password" placeholder="Password" required="required"/>-->
-<!--                </div>-->
-<!--                <button class="btn btn-lg">LOGIN</button>-->
-<!--              </form>-->
-<!--            </div>-->
-<!--            <button class="btn btn-back js-btn" data-target="welcome"><i class="fas fa-angle-left"></i></button>-->
-<!--          </div>-->
-
-<!--            Form login ADMIN-->
-          <div class="card border-0 shadow card--login" id="login">
+            Form login TEACHER
+          <div class="card border-0 shadow card--teacher" id="teacher">
             <div class="card-body">
               <h2 class="card-title">Welcome Back!</h2>
-              <p>Login for admin</p>
-              <form method = "post">
+              <p>Login for teacher</p>
+              <form action ="{{ url_for('login_teacher') }}" method="post">
                 <div class="form-group">
                   <input class="form-control" name="username" type="text" placeholder="Username" required="required"/>
                 </div>
                 <div class="form-group">
                   <input class="form-control" name="password" type="password" placeholder="Password" required="required"/>
                 </div>
-                <button class="btn btn-lg">LOGIN</button>
+                <input type="submit" value = "LOGIN" class="btn btn-lg"/>
+              </form>
+            </div>
+            <button class="btn btn-back js-btn" data-target="welcome"><i class="fas fa-angle-left"></i></button>
+          </div>
+
+<!--            Form login ADMIN-->
+          <div class="card border-0 shadow card--login" id="login">
+            <div class="card-body">
+              <h2 class="card-title">Welcome Back!</h2>
+              <p>Login for admin</p>
+              <form action = "{{ url_for('login_admin') }}" method = "post">
+                <div class="form-group">
+                  <input class="form-control" name="username" type="text" placeholder="Username" required="required"/>
+                </div>
+                <div class="form-group">
+                  <input class="form-control" name="password" type="password" placeholder="Password" required="required"/>
+                </div>
+                <input type="submit" value = "LOGIN" class="btn btn-lg"/>
               </form>
             </div>
             <button class="btn btn-back js-btn" data-target="welcome"><i class="fas fa-angle-left"></i></button>

@@ -7,6 +7,14 @@ from werkzeug.utils import redirect
 from app import db, admin
 
 
+class Role(db.Model):
+    __tablename__ = "role"
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+
+    users = relationship('User', backref='role', lazy=True)
+
+
 class User(db.Model, UserMixin):
     __tablename__ = "user"
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -14,7 +22,9 @@ class User(db.Model, UserMixin):
     active = Column(Boolean, default=True)
     username = Column(String(50), nullable=False)
     password = Column(String(500), nullable=False)
-    admin = Column(String(50), nullable=False)
+
+    role_id = Column(Integer, ForeignKey(Role.id), nullable=False)
+
     def __str__(self):
         return self.name
 
@@ -61,7 +71,7 @@ class LogOutView(AuthenticatedBaseView):
     @expose('/')
     def index(self):
         logout_user()
-        return redirect('/admin')
+        return redirect('/login')
 
 
 admin.add_view(ClassView(Class, db.session))
