@@ -129,6 +129,5 @@ def validate_user(username, password):
     return None
 
 
-
 if __name__ == "__main__":
     print(read_products())

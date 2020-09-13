@@ -1,5 +1,4 @@
 import hashlib
-
 from flask import render_template, request, url_for, flash
 from flask_login import login_user, login_required
 from flask_user import roles_required
@@ -25,6 +24,12 @@ def unauthorized_admin():
     return redirect(url_for("login"))
 
 
+@app.route('/admin')
+@roles_required('Admin')
+def admin():
+    render_template('admin/index.html')
+
+
 @app.route('/login-admin', methods=['POST', 'GET'])
 def login_admin():
     if request.method == 'POST':
@@ -35,10 +40,11 @@ def login_admin():
                                  User.password == password.strip()).first()
         # User.query.join(Role.users).filter(role_id == 1).all()).first()
         if user:
-            role = User.query.filter(User.id == user.get_id(),
-                                     User.role_id == 1).first()
+            role = User.query.join(User.roles).filter(User.id == user.get_id()).first()
             if role:
                 login_user(user=user)
+            elif User.active == 1:
+                flash("Account is inactive.")
             else:
                 flash("Wrong account type.")
         else:
@@ -67,21 +73,21 @@ def login():
 
 
 @app.route('/submit')
-@roles_required('admin')
+@roles_required('Admin')
 @login_required
 def submit():
     return render_template("submit.html")
 
 
 @app.route('/product')
-@roles_required('admin')
+@roles_required('Admin')
 @login_required
 def product():
     return render_template("product.html")
 
 
 @app.route('/score')
-@roles_required('admin')
+@roles_required('Admin')
 @login_required
 def score():
     return render_template("score.html")
