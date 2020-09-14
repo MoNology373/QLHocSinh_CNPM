@@ -24,8 +24,8 @@ def unauthorized_admin():
     return redirect(url_for("login"))
 
 
-@app.route('/admin')
-@roles_required('Admin')
+@app.route('/admin/index')
+@roles_required('admin')
 def admin():
     render_template('admin/index.html')
 
@@ -37,10 +37,10 @@ def login_admin():
         password = request.form.get("password", "")
         password = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())
         user = User.query.filter(User.username == username.strip(),
-                                 User.password == password.strip()).first()
-        # User.query.join(Role.users).filter(role_id == 1).all()).first()
+                                 User.password == password.strip(),
+                                 User.roles == 1).first()
         if user:
-            role = User.query.join(User.roles).filter(User.id == user.get_id()).first()
+            role = User.query.join(Role.users).filter(UserRoles.role_id == 1).first()
             if role:
                 login_user(user=user)
             elif User.active == 1:
@@ -73,21 +73,21 @@ def login():
 
 
 @app.route('/submit')
-@roles_required('Admin')
+@roles_required('admin')
 @login_required
 def submit():
     return render_template("submit.html")
 
 
 @app.route('/product')
-@roles_required('Admin')
+@roles_required('admin')
 @login_required
 def product():
     return render_template("product.html")
 
 
 @app.route('/score')
-@roles_required('Admin')
+@roles_required('admin')
 @login_required
 def score():
     return render_template("score.html")
