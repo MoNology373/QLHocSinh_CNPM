@@ -2,6 +2,7 @@ import hashlib
 import json
 import os
 from app import app
+from app.models import Teacher, AdminAll
 
 
 def read_categories():
@@ -36,96 +37,21 @@ def read_products(category_id=0, keyword=None, from_price=None, to_price=None):
         return products
 
 
-def update_product(product_id, name, description, math, physic, chemistry, images, category_id):
-    products = read_products()
-    for idx, p in enumerate(products):
-        if p["id"] == int(product_id):
-            products[idx]["name"] = name
-            products[idx]["description"] = description
-            products[idx]["math"] = math
-            products[idx]["physic"] = physic
-            products[idx]["chemistry"] = chemistry
-            products[idx]["images"] = images
-            products[idx]["category_id"] = int(category_id)
-
-            break
-
-    return update_json(products)
+def validate_user_teacher(username, password):
+    hashpass = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())
+    user = Teacher.query.filter(Teacher.userName == username.strip(),
+                                Teacher.passWord == hashpass).first()
+    if user:
+        return user
+    return None
 
 
-def update_json(products, path="data/products.json"):
-    try:
-        with open(os.path.join(app.root_path, path),
-                  "w", encoding="utf-8") as f:
-            json.dump(products, f, ensure_ascii=False, indent=4)
-
-            return True
-    except Exception as ex:
-        print(ex)
-        return False
-
-
-def add_product(name, description, price, images, category_id):
-    products = read_products()
-    product = {
-        "id": len(products) + 1,
-        "name": name,
-        "description": description,
-        "price": float(price),
-        "images": images,
-        "category_id": int(category_id)
-    }
-    products.append(product)
-
-    try:
-        with open(os.path.join(app.root_path, "data/products.json"),
-                  "w", encoding="utf-8") as f:
-            json.dump(products, f, ensure_ascii=False, indent=4)
-
-            return product
-    except Exception as ex:
-        print(ex)
-        return None
-
-
-def delete_product(product_id):
-    products = read_products()
-    for idx, product in enumerate(products):
-        if product["id"] == int(product_id):
-            del products[idx]
-            break
-
-    return update_json(products=products)
-
-
-def read_users():
-    with open(os.path.join(app.root_path, "data/users.json"),
-              encoding="utf-8") as f:
-        return json.load(f)
-
-
-def add_user(name, username, password, avatar):
-    users = read_users()
-    user = {
-        "id": len(users) + 1,
-        "name": name,
-        "avatar": avatar,
-        "username": username,
-        "password": str(hashlib.md5(password.encode('utf-8')).hexdigest())
-    }
-    users.append(user)
-
-    return update_json(users, path="data/users.json")
-
-
-def validate_user(username, password):
-    users = read_users()
-    password = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())
-
-    for user in users:
-        if user["username"].strip() == username.strip() and user["password"] == password:
-            return user
-
+def validate_user_admin(username, password):
+    hashpass = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())
+    user = AdminAll.query.filter(AdminAll.userName == username.strip(),
+                                 AdminAll.passWord == hashpass).first()
+    if user:
+        return user
     return None
 
 

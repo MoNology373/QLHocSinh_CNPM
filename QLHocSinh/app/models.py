@@ -1,44 +1,43 @@
-from datetime import datetime
-import flask_admin_subview
 from flask import url_for, request
 from flask_admin import BaseView, expose
 from flask_admin.contrib.sqla import ModelView
 from flask_login import UserMixin, logout_user, current_user
-from flask_security import RoleMixin
-from sqlalchemy.orm import relationship, backref, column_property
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Date, Text, Float
+from sqlalchemy.orm import relationship, backref, column_property
 from werkzeug.utils import redirect
 from app import db, admin
 
 
-class User(db.Model, UserMixin):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True, unique=True)
-    name = Column(String(50), nullable=False)
+# Giáo viên
+class Teacher(db.Model, UserMixin):
+    __tablename__ = "teacher"
+
     active = Column(Boolean, default=True)
-    username = Column(String(50), nullable=False)
-    password = Column(String(500), nullable=False)
-    # password = sha256((Column(String(500), nullable=False)).encode('utf-8')).hexdigest()
-    roles = db.relationship('Role', secondary='user_roles', backref=backref('users', lazy='dynamic'))
+    userName = Column(String(50), nullable=False, primary_key=True)
+    firstName = Column(String(50), nullable=False)
+    lastName = Column(String(50), nullable=False)
+    fullName = column_property(firstName + ' ' + lastName)
+    passWord = Column(String(500), nullable=False)
 
     def __str__(self):
         return self.name
 
-
-# Để sử dụng @roles_required
-# các role
-class Role(db.Model, RoleMixin):
-    __tablename__ = 'roles'
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(50), unique=True)
+    def get_id(self):
+        return self.userName
 
 
-# Bảng trung gian
-class UserRoles(db.Model):
-    __tablename__ = 'user_roles'
-    id = db.Column(db.Integer(), primary_key=True, unique=True)
-    user_id = db.Column(Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
-    role_id = db.Column(Integer(), db.ForeignKey('roles.id', ondelete='CASCADE'))
+# Admin
+class AdminAll(db.Model, UserMixin):
+    __tablename__ = "admin"
+
+    userName = Column(String(50), primary_key=True, nullable=False)
+    firstName = Column(String(50), nullable=False)
+    lastName = Column(String(50), nullable=False)
+    fullName = column_property(firstName + ' ' + lastName)
+    passWord = Column(String(500), nullable=False)
+
+    def get_id(self):
+        return self.userName
 
 
 # Khối
@@ -48,7 +47,6 @@ class Grade(db.Model):
     name = Column(String(50), nullable=False)
 
     classes = relationship('Class', backref='grade', lazy=True)
-    students = relationship('Student', backref='grade', lazy=True)
 
     def __str__(self):
         return self.name
@@ -60,6 +58,7 @@ class Class(db.Model):
     grade_id = Column(Integer, ForeignKey(Grade.id, ondelete="CASCADE"), nullable=False)
     name = Column(String(50), nullable=False)
     students = relationship('Student', backref='class', lazy=True)
+
     # students = relationship('Student', lazy=True)
 
     def __str__(self):
@@ -71,20 +70,20 @@ class SemesterOne(db.Model):
     __tablename__ = "semester_one"
     id = Column(Integer, primary_key=True, unique=True)
     # Khóa ngoại tới bảng reuslt
-    result = relationship('Result', back_populates='semester_one', uselist=False)
+    # result = relationship('Result', back_populates='semester_one', uselist=False)
     # Khóa ngoại chứa hình thức kiểm tra
-    test_type = relationship('TestType', backref=backref('semester_one', uselist=False))
-    test_type_id = Column(Integer, ForeignKey('test_type.id'))
+    test_type_one = relationship("TestTypeOne", backref="semester_one", lazy=True)
+    test_type_one_id = Column(Integer, ForeignKey('test_type_one.id'), nullable=False)
 
 
 class SemesterTwo(db.Model):
     __tablename__ = "semester_two"
     id = Column(Integer, primary_key=True, unique=True)
     # Khóa ngoại tới bảng result
-    result = relationship('Result', back_populates='semester_two', uselist=False)
+    # result = relationship('Result', back_populates='semester_two', uselist=False)
     # Khóa ngoại chứa hình thức kiểm tra
-    test_type = relationship('TestType', backref=backref('semester_two', uselist=False))
-    test_type_id = Column(Integer, ForeignKey('test_type.id'))
+    test_type_two = relationship("TestTypeTwo", backref="semester_two", lazy=True)
+    test_type_two_id = Column(Integer, ForeignKey('test_type_two.id'), nullable=False)
 
 
 # Bảng điểm môn học
@@ -95,9 +94,10 @@ class Result(db.Model):
     student = relationship('Student', back_populates='result', uselist=False)
     # Bảng điểm chứa các id của các học kì
     semester_one = relationship('SemesterOne', backref=backref('result_one', uselist=False))
-    semester_one_id = Column(Integer, ForeignKey(SemesterOne.id))
+    semester_one_id = Column(Integer, ForeignKey(SemesterOne.id), nullable=False)
+
     semester_two = relationship('SemesterTwo', backref=backref('result_two', uselist=False))
-    semester_two_id = Column(Integer, ForeignKey(SemesterTwo.id))
+    semester_two_id = Column(Integer, ForeignKey(SemesterTwo.id), nullable=False)
 
 
 # def validate_form(form):
@@ -114,7 +114,6 @@ class Student(db.Model):
     email = Column(String(100), nullable=False)
     address = Column(String(200), nullable=False)
     # Khóa ngoại
-    grade_id = Column(Integer, ForeignKey(Grade.id, ondelete="CASCADE"), nullable=False)
     class_id = Column(Integer, ForeignKey(Class.id, ondelete="CASCADE"), nullable=False)
 
     result_id = Column(Integer, ForeignKey(Result.id))
@@ -124,25 +123,54 @@ class Student(db.Model):
         return self.name
 
 
-class TestType(db.Model):
-    __tablename__ = "test_type"
+# Các hình thức kiểm tra thuộc HK1
+class TestTypeOne(db.Model):
+    __tablename__ = "test_type_one"
     id = Column(Integer, primary_key=True, unique=True)
+    name = Column(String(50), nullable=False)
     # Điểm 15'
-    subject_fifteen_id = Column(Integer, ForeignKey('subject_fifteen.id'))
-    subject_fifteen = relationship('SubjectFifteen', back_populates='test_type')
+    subject_fifteen_one_id = Column(Integer, ForeignKey('subject_fifteen_one.id'))
+    subject_fifteen_one = relationship('SubjectFifteenOne', back_populates='test_type_one')
     # Điểm 1 tiết
-    subject_period_id = Column(Integer, ForeignKey('subject_period.id'))
-    subject_period = relationship('SubjectPeriod', back_populates='test_type')
+    subject_period_id_one = Column(Integer, ForeignKey('subject_period_one.id'))
+    subject_period_one = relationship('SubjectPeriodOne', back_populates='test_type_one')
     # Điểu cuối kì
-    subject_final_id = Column(Integer, ForeignKey('subject_final.id'))
-    subject_final = relationship('SubjectFinal', back_populates='test_type')
+    subject_final_one_id = Column(Integer, ForeignKey('subject_final_one.id'))
+    subject_final_one = relationship('SubjectFinalOne', back_populates='test_type_one')
+    # Khóa ngoại tới SemesterOne
+    # semester_one_id = Column(Integer, ForeignKey(SemesterOne.id, ondelete="CASCADE"))
+    # semester_one = relationship('SemesterOne', back_populates='test_type_one')
 
     def __str__(self):
         return self.name
 
 
-class SubjectFifteen(db.Model):
-    __tablename__ = "subject_fifteen"
+# Các hình thức kiểm tra thuộc HK2
+class TestTypeTwo(db.Model):
+    __tablename__ = "test_type_two"
+    id = Column(Integer, primary_key=True, unique=True)
+    name = Column(String(50), nullable=False)
+    # Điểm 15'
+    subject_fifteen_two_id = Column(Integer, ForeignKey('subject_fifteen_two.id'))
+    subject_fifteen_two = relationship('SubjectFifteenTwo', back_populates='test_type_two')
+    # Điểm 1 tiết
+    subject_period_two_id = Column(Integer, ForeignKey('subject_period_two.id'))
+    subject_period_two = relationship('SubjectPeriodTwo', back_populates='test_type_two')
+    # Điểu cuối kì
+    subject_final_two_id = Column(Integer, ForeignKey('subject_final_two.id'))
+    subject_final_two = relationship('SubjectFinalTwo', back_populates='test_type_two')
+    # Khóa ngoại tới SemesterTwo
+    # semester_two_id = Column(Integer, ForeignKey(SemesterTwo.id, ondelete="CASCADE"))
+    # semester_two = relationship('SemesterTwo', back_populates='test_type_two')
+
+    def __str__(self):
+        return self.name
+
+
+# Học kì 1
+# Các hình thức kiểm tra
+class SubjectFifteenOne(db.Model):
+    __tablename__ = "subject_fifteen_one"
     id = Column(Integer, primary_key=True, unique=True)
     math = Column(Float, default=0)
     physic = Column(Float, default=0)
@@ -151,12 +179,14 @@ class SubjectFifteen(db.Model):
     his = Column(Float, default=0)
     geo = Column(Float, default=0)
     pe = Column(Float, default=0)
-    # Khóa ngoại
-    test_type = relationship('TestType', back_populates='subject_fifteen', uselist=False)
+    # Khóa ngoại tới TestTypeOne
+    test_type_one = relationship('TestTypeOne', back_populates='subject_fifteen_one')
+    # test_type_one_id = Column(Integer, ForeignKey(TestTypeOne.id, ondelete="CASCADE"), nullable=False)
 
 
-class SubjectPeriod(db.Model):
-    __tablename__ = "subject_period"
+# Các hình thức kiểm tra
+class SubjectPeriodOne(db.Model):
+    __tablename__ = "subject_period_one"
     id = Column(Integer, primary_key=True, unique=True)
     math = Column(Float, default=0)
     physic = Column(Float, default=0)
@@ -165,12 +195,14 @@ class SubjectPeriod(db.Model):
     his = Column(Float, default=0)
     geo = Column(Float, default=0)
     pe = Column(Float, default=0)
-    # Khóa ngoại
-    test_type = relationship('TestType', back_populates='subject_period', uselist=False)
+    # Khóa ngoại tới TestTypeOne
+    test_type_one = relationship('TestTypeOne', back_populates='subject_period_one')
+    # test_type_one_id = Column(Integer, ForeignKey(TestTypeOne.id, ondelete="CASCADE"), nullable=False)
 
 
-class SubjectFinal(db.Model):
-    __tablename__ = "subject_final"
+# Các hình thức kiểm tra
+class SubjectFinalOne(db.Model):
+    __tablename__ = "subject_final_one"
     id = Column(Integer, primary_key=True, unique=True)
     math = Column(Float, default=0)
     physic = Column(Float, default=0)
@@ -179,77 +211,144 @@ class SubjectFinal(db.Model):
     his = Column(Float, default=0)
     geo = Column(Float, default=0)
     pe = Column(Float, default=0)
-    # Khóa ngoại
-    test_type = relationship('TestType', back_populates='subject_final', uselist=False)
+    # Khóa ngoại tới TestTypeOne
+    test_type_one = relationship('TestTypeOne', back_populates='subject_final_one')
+    # test_type_one_id = Column(Integer, ForeignKey(TestTypeOne.id, ondelete="CASCADE"), nullable=False)
+
+
+# Học kì 2
+# Các hình thức kiểm tra
+class SubjectFifteenTwo(db.Model):
+    __tablename__ = "subject_fifteen_two"
+    id = Column(Integer, primary_key=True, unique=True)
+    math = Column(Float, default=0)
+    physic = Column(Float, default=0)
+    chem = Column(Float, default=0)
+    bio = Column(Float, default=0)
+    his = Column(Float, default=0)
+    geo = Column(Float, default=0)
+    pe = Column(Float, default=0)
+    # Khóa ngoại tới TestTypeTwo
+    test_type_two = relationship('TestTypeTwo', back_populates='subject_fifteen_two')
+    # test_type_two_id = Column(Integer, ForeignKey(TestTypeTwo.id, ondelete="CASCADE"), nullable=False)
+
+
+# Các hình thức kiểm tra
+class SubjectPeriodTwo(db.Model):
+    __tablename__ = "subject_period_two"
+    id = Column(Integer, primary_key=True, unique=True)
+    math = Column(Float, default=0)
+    physic = Column(Float, default=0)
+    chem = Column(Float, default=0)
+    bio = Column(Float, default=0)
+    his = Column(Float, default=0)
+    geo = Column(Float, default=0)
+    pe = Column(Float, default=0)
+    # Khóa ngoại tới TestTypeTwo
+    test_type_two = relationship('TestTypeTwo', back_populates='subject_period_two')
+    # test_type_two_id = Column(Integer, ForeignKey(TestTypeTwo.id, ondelete="CASCADE"), nullable=False)
+
+
+# Các hình thức kiểm tra
+class SubjectFinalTwo(db.Model):
+    __tablename__ = "subject_final_two"
+    id = Column(Integer, primary_key=True, unique=True)
+    math = Column(Float, default=0)
+    physic = Column(Float, default=0)
+    chem = Column(Float, default=0)
+    bio = Column(Float, default=0)
+    his = Column(Float, default=0)
+    geo = Column(Float, default=0)
+    pe = Column(Float, default=0)
+    # Khóa ngoại tới TestTypeTwo
+    test_type_two = relationship('TestTypeTwo', back_populates='subject_final_two')
+    # test_type_two_id = Column(Integer, ForeignKey(TestTypeTwo.id, ondelete="CASCADE"), nullable=False)
 
 
 class AuthenticatedModelView(ModelView):
     def is_accessible(self):
         return current_user.is_authenticated
 
-    def inaccessible_callback(self, name, **kwargs):
-        # redirect to login page if user doesn't have access
-        return redirect(url_for('login', next=request.url))
+    # def inaccessible_callback(self, name, **kwargs):
+    #     # redirect to login page if user doesn't have access
+    #     return redirect(url_for('/login', next=request.url))
 
 
 class AuthenticatedBaseView(BaseView):
     def is_accessible(self):
         return current_user.is_authenticated
 
-    def inaccessible_callback(self, name, **kwargs):
-        # redirect to login page if user doesn't have access
-        return redirect(url_for('login', next=request.url))
+    # def inaccessible_callback(self, name, **kwargs):
+    #     # redirect to login page if user doesn't have access
+    #     return redirect(url_for('/login', next=request.url))
 
 
 class ClassView(AuthenticatedModelView):
+    column_display_pk = True
     create_modal = True
     edit_modal = True
 
 
 class StudentView(AuthenticatedModelView):
     column_display_pk = True
-    # form_columns = ('student_id', 'name', 'sex', 'date_of_birth', 'email', 'address', 'grade_id', 'class_id', 'result_id')
+    form_columns = ('student_id', 'name', 'sex', 'date_of_birth', 'email', 'address', 'class_id', 'result_id')
+    # column_list = ('student_id', 'name', 'sex', 'date_of_birth', 'email', 'address', 'class_id', 'result_id')
     column_default_sort = 'student_id'
-    column_searchable_list = ['name', 'student_id']
+    column_searchable_list = ['name', 'student_id', 'sex', 'class_id']
     create_modal = True
     edit_modal = True
 
 
 class GradeView(AuthenticatedModelView):
-    column_exclude_list = 'Class'
     column_display_pk = True
     create_modal = True
     edit_modal = True
 
 
-class RolesView(AuthenticatedModelView):
+class TeacherView(AuthenticatedModelView):
+    # Có thể chỉnh sửa hoặc tạo
+    form_columns = ('userName', 'active', 'firstName', 'lastName', 'passWord')
+    # Thể hiện ở table
+    column_list = ('fullName', 'userName', 'active', 'firstName', 'lastName')
     column_display_pk = True
     create_modal = True
     edit_modal = True
 
 
-class UsersView(AuthenticatedModelView):
+class AdminAllView(AuthenticatedModelView):
+    column_list = ('fullName', 'userName', 'firstName', 'lastName')
     column_display_pk = True
+    can_create = False
+    can_edit = False
+    can_delete = False
     create_modal = True
     edit_modal = True
-    column_list = ('id', 'name', 'active', 'username', 'role_id')
 
 
 class SemesterOneView(AuthenticatedModelView):
-    column_list = ('id', 'subject_fifteen', 'subject_period', 'subject_final')
-    column_display_pk = True
+    # column_list = ('id', 'test_type')
+    # form_columns = ('id', 'test_type_one_id')
+    # column_list = ('id', 'test_type_one_id')
     create_modal = True
     edit_modal = True
 
 
 class SemesterTwoView(AuthenticatedModelView):
-    column_list = ('id', 'subject_fifteen', 'subject_period', 'subject_final')
+    # form_columns = ('id', 'test_type_two_id')
+    # column_list = ('id', 'test_type_two_id')
+    create_modal = True
+    edit_modal = True
+
+
+class TestTypeOneView(AuthenticatedModelView):
+    column_list = ('id', 'name', 'subject_fifteen_one_id', 'subject_period_id_one', 'subject_final_one_id')
     column_display_pk = True
     create_modal = True
     edit_modal = True
 
 
-class TestTypeView(AuthenticatedModelView):
+class TestTypeTwoView(AuthenticatedModelView):
+    column_list = ('id', 'subject_fifteen_two_id', 'subject_period_two_id', 'subject_final_two_id')
     column_display_pk = True
     create_modal = True
     edit_modal = True
@@ -274,12 +373,11 @@ class SubjectFinalView(AuthenticatedModelView):
 
 
 class ResultView(AuthenticatedModelView):
-    form_columns = ('id', 'semester_one_id', 'semester_two_id')
+    # form_columns = ('id', 'semester_one_id', 'semester_two_id')
+    column_list = ('id', 'semester one', 'semester two')
     create_modal = True
     edit_modal = True
     column_display_pk = True
-    column_list = ('id', 'semester_one_id', 'semester_two_id')
-    pass
 
 
 class LogOutView(AuthenticatedBaseView):
@@ -289,24 +387,27 @@ class LogOutView(AuthenticatedBaseView):
         return redirect('/login')
 
 
-admin.add_view(UsersView(User, db.session))
-admin.add_view(RolesView(Role, db.session))
+admin.add_view(TeacherView(Teacher, db.session))
+admin.add_view(AdminAllView(AdminAll, db.session))
 
 admin.add_view(GradeView(Grade, db.session))
 admin.add_view(ClassView(Class, db.session))
 admin.add_view(StudentView(Student, db.session))
 
 admin.add_view(ResultView(Result, db.session))
-# admin.ad
 admin.add_view(SemesterOneView(SemesterOne, db.session, category='Semesters'))
 admin.add_view(SemesterTwoView(SemesterTwo, db.session, category='Semesters'))
-# admin.add_view(SemesterOneView(SemesterOne, db.session), category="Semesters")
-# admin.add_view(SemesterTwoView(SemesterTwo, db.session), category="Semesters")
-# admin.add_view(TestTypeView(TestType, db.session))
 
-admin.add_view(SubjectFifteenView(SubjectFifteen, db.session, category='Score'))
-admin.add_view(SubjectPeriodView(SubjectPeriod, db.session, category='Score'))
-admin.add_view(SubjectFinalView(SubjectFinal, db.session, category='Score'))
+admin.add_view(TestTypeOneView(TestTypeOne, db.session, category='Test Types'))
+admin.add_view(TestTypeTwoView(TestTypeTwo, db.session, category='Test Types'))
+
+admin.add_view(SubjectFifteenView(SubjectFifteenOne, db.session, category='Semester One Score'))
+admin.add_view(SubjectPeriodView(SubjectPeriodOne, db.session, category='Semester One Score'))
+admin.add_view(SubjectFinalView(SubjectFinalOne, db.session, category='Semester One Score'))
+
+admin.add_view(SubjectFifteenView(SubjectFifteenTwo, db.session, category='Semester Two Score'))
+admin.add_view(SubjectPeriodView(SubjectPeriodTwo, db.session, category='Semester Two Score'))
+admin.add_view(SubjectFinalView(SubjectFinalTwo, db.session, category='Semester Two Score'))
 
 admin.add_view(LogOutView(name='Log out'))
 
