@@ -53,7 +53,6 @@ def login():
                 return redirect("admin")
             else:
                 flash('Thất bại')
-
     return render_template("login.html", err_msg=err_msg)
 
 

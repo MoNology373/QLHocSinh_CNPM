@@ -23,11 +23,11 @@ DROP TABLE IF EXISTS `class`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `class` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `grade_id` int NOT NULL,
+  `class_id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
+  `grade_id` int NOT NULL,
+  PRIMARY KEY (`class_id`),
+  UNIQUE KEY `class_id` (`class_id`),
   KEY `grade_id` (`grade_id`),
   CONSTRAINT `class_ibfk_1` FOREIGN KEY (`grade_id`) REFERENCES `grade` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
@@ -39,7 +39,7 @@ CREATE TABLE `class` (
 
 LOCK TABLES `class` WRITE;
 /*!40000 ALTER TABLE `class` DISABLE KEYS */;
-INSERT INTO `class` VALUES (1,1,'10A1'),(2,1,'10A2'),(3,1,'10A3'),(4,1,'10A4'),(5,2,'11A1'),(6,2,'11A2'),(7,2,'11A3'),(8,3,'12A1'),(9,3,'12A2');
+INSERT INTO `class` VALUES (1,'10A1',110),(2,'10A2',110),(3,'10A3',110),(4,'10A4',110),(5,'11A1',111),(6,'11A2',111),(7,'11A3',111),(8,'12A1',112),(9,'12A2',112);
 /*!40000 ALTER TABLE `class` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-09-15 16:54:03
+-- Dump completed on 2020-09-16 20:35:03
