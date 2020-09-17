@@ -8,46 +8,52 @@ from werkzeug.utils import redirect
 from app import db, admin
 
 
-# Giáo viên
-class Teacher(db.Model, UserMixin):
-    __tablename__ = "teacher"
-
-    active = Column(Boolean, default=True)
-    userName = Column(String(50), nullable=False, primary_key=True)
+# Người dùng nói chung
+class User(db.Model, UserMixin):
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    userName = Column(String(50), nullable=False)
     firstName = Column(String(50), nullable=False)
     lastName = Column(String(50), nullable=False)
     fullName = column_property(lastName + ' ' + firstName)
     passWord = Column(String(500), nullable=False)
+    teacher = relationship('Teacher', backref='account_teacher', uselist=False, lazy=True)
+    admin = relationship('AdminAll', backref='account_admin', uselist=False, lazy=True)
+    admin_check = Column(Integer, default=0)
+
+    def get_id(self):
+        return self.id
+
+    def __str__(self):
+        return self.userName
+
+
+# Giáo viên
+class Teacher(db.Model):
+    __tablename__ = "teacher"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    teacher_id = Column(Integer, ForeignKey(User.id))
+    active = Column(Boolean, default=True)
     # Nối tới class_teacher
     classes = relationship('Class', secondary='class_teacher', lazy='subquery', backref=backref('teachers', lazy=True))
 
-    def __str__(self):
-        return self.userName
-
     def get_id(self):
-        return self.userName
+        return self.get_id()
 
 
 # Admin
-class AdminAll(db.Model, UserMixin):
+class AdminAll(db.Model):
     __tablename__ = "admin"
-
-    userName = Column(String(50), primary_key=True, nullable=False)
-    firstName = Column(String(50), nullable=False)
-    lastName = Column(String(50), nullable=False)
-    fullName = column_property(lastName + ' ' + firstName)
-    passWord = Column(String(500), nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    admin_id = Column(Integer, ForeignKey(User.id))
     # Quản lí Khối
     grades = relationship('Grade', backref='admin', lazy=True)
+    #
 
     def get_id(self):
-        return self.userName
-
-    def __str__(self):
-        return self.userName
+        return self.id
 
 
-# Khối
+#Khối
 class Grade(db.Model):
     __tablename__ = "grade"
     id = Column(Integer, primary_key=True, unique=True)
@@ -55,7 +61,7 @@ class Grade(db.Model):
     # Có lớp
     classes = relationship('Class', backref='grade', lazy=True)
     # Thuộc Admin
-    admin_id = Column(String(50), ForeignKey(AdminAll.userName, ondelete='CASCADE'))
+    admin_id = Column(Integer, ForeignKey(AdminAll.id, ondelete='CASCADE'))
 
     def __str__(self):
         return self.name
@@ -77,7 +83,8 @@ class Class(db.Model):
 class Student(db.Model):
     __tablename__ = "student"
     # Thông tin cơ bản
-    student_id = Column(Integer, primary_key=True, unique=True, nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    student_id = Column(Integer, unique=True, nullable=False)
     lastName = Column(Text(50), nullable=False)
     firstName = Column(Text(10), nullable=False)
     fullName = column_property(lastName + ' ' + firstName)
@@ -87,6 +94,7 @@ class Student(db.Model):
     address = Column(String(200), nullable=False)
     # Thuộc Lớp
     class_id = Column(Integer, ForeignKey(Class.class_id, ondelete="CASCADE"))
+    # class_name = Column(String(50), ForeignKey(Class.name, ondelete="CASCADE"))
     # Có bảng điểm
     scores = relationship('Score', backref='student', lazy=True)
 
@@ -96,7 +104,8 @@ class Student(db.Model):
 
 class Subject(db.Model):
     __tablename__ = 'subject'
-    subject_id = Column(Integer, primary_key=True, unique=True, nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    subject_id = Column(Integer, unique=True, nullable=False)
     subject_name = Column(String(50), nullable=False)
     # Có bảng điểm
     scores = relationship('Score', backref='subject', lazy=True)
@@ -105,37 +114,39 @@ class Subject(db.Model):
         return self.subject_name
 
 
+#
 class Semester(db.Model):
     __tablename__ = 'semester'
-    semester_id = Column(Integer, primary_key=True, unique=True, nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    semester_id = Column(Integer, unique=True, nullable=False)
     semester_name = Column(Integer)
     # Có bảng điểm
     scores = relationship('Score', backref='semester', lazy=True)
 
-    def __str__(self):
-        return self.semester_name
-
 
 class Score(db.Model):
     __tablename__ = 'score'
-    score_id = Column(Integer, primary_key=True, unique=True, nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    score_id = Column(Integer, unique=True, nullable=False)
     score_fifteen = Column(Float, default=0)
     score_period = Column(Float, default=0)
     score_final = Column(Float, default=0)
     # Thuộc Môn học
-    subject_id = Column(Integer, ForeignKey(Subject.subject_id, ondelete='CASCADE'))
+    subject_id = Column(Integer, ForeignKey(Subject.id, ondelete='CASCADE'))
     # Thuộc Học sinh
     student_id = Column(Integer, ForeignKey(Student.student_id, ondelete='CASCADE'))
     # Thuộc Học kì
-    semester_id = Column(Integer, ForeignKey(Semester.semester_id, ondelete='CASCADE'))
+    semester_id = Column(Integer, ForeignKey(Semester.id, ondelete='CASCADE'))
 
 
+#
+#
 class_teacher = db.Table('class_teacher',
                          Column('class_id', Integer,
                                 ForeignKey(Class.class_id),
                                 primary_key=True),
-                         Column('teacher_name', String(50),
-                                ForeignKey(Teacher.userName),
+                         Column('teacher_name', Integer,
+                                ForeignKey(Teacher.id),
                                 primary_key=True))
 
 
@@ -146,7 +157,9 @@ class_teacher = db.Table('class_teacher',
 #
 class AuthenticatedModelView(ModelView):
     def is_accessible(self):
-        return current_user.is_authenticated
+        return current_user.is_authenticated and current_user.admin_check == 1
+
+    create_modal = True
     can_view_details = True
     column_display_all_relations = True
     can_set_page_size = True
@@ -155,7 +168,7 @@ class AuthenticatedModelView(ModelView):
 
 class AuthenticatedBaseView(BaseView):
     def is_accessible(self):
-        return current_user.is_authenticated
+        return current_user.is_authenticated and current_user.id == 1
 
     # def inaccessible_callback(self, name, **kwargs):
     #     # redirect to login page if user doesn't have access
@@ -170,52 +183,47 @@ class LogOutView(AuthenticatedBaseView):
 
 
 class TeacherView(AuthenticatedModelView):
-    create_modal = True
-    column_display_pk = True
+    pass
 
 
 class AdminView(AuthenticatedModelView):
     can_create = False
     can_edit = True
     can_delete = False
-    create_modal = True
-    column_display_pk = True
 
 
 class GradeView(AuthenticatedModelView):
-    # form_columns = ('id', 'name', 'admin_id')
-    # column_list = ('id', 'name', 'admin_id')
-    create_modal = True
-    column_display_pk = True
+    pass
 
 
 class ClassView(AuthenticatedModelView):
-    create_modal = True
-    column_display_pk = True
+    pass
 
 
 class StudentView(AuthenticatedModelView):
-    create_modal = True
-    column_display_pk = True
-    column_searchable_list = ["fullName", "student_id", "class_id"]
-    # column_labels = dict()
+    column_labels = dict(fullName='Full name', student_id='Student ID', lastName='Last name', firstName='First name')
+    column_searchable_list = ['fullName', 'student_id', 'lastName', 'firstName', Class.name]
+    column_display_all_relations = False
 
 
 class ScoreView(AuthenticatedModelView):
-    create_modal = True
-    column_display_pk = True
+    column_searchable_list = [Subject.subject_name]
 
 
 class SubjectView(AuthenticatedModelView):
-    create_modal = True
-    column_display_pk = True
+    column_display_all_relations = False
 
 
 class SemesterView(AuthenticatedModelView):
-    create_modal = True
-    column_display_pk = True
+    column_display_all_relations = False
 
 
+class UserView(AuthenticatedModelView):
+    column_display_all_relations = False
+    pass
+
+
+admin.add_view(UserView(User,db.session))
 admin.add_view(TeacherView(Teacher, db.session))
 admin.add_view(AdminView(AdminAll, db.session))
 #
@@ -226,7 +234,6 @@ admin.add_view(StudentView(Student, db.session))
 admin.add_view(SubjectView(Subject, db.session))
 admin.add_view(SemesterView(Semester, db.session))
 admin.add_view(ScoreView(Score, db.session))
-
 
 admin.add_view(LogOutView(name='Log out'))
 

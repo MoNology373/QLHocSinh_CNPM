@@ -7,12 +7,14 @@ from app.models import *
 @app.route('/')
 @login_required
 def index():
-    return render_template("index.html")
+    studentList = Student.query.filter().all()
+    classList = Class.query.filter().all
+    return render_template("index.html", studentList=studentList, classList=classList)
 
 
 @login.user_loader
 def user_load(user_id):
-    return AdminAll.query.get(user_id)
+    return User.query.get(user_id)
 
 
 @login.unauthorized_handler
@@ -20,53 +22,44 @@ def unauthorized():
     return redirect(url_for("login"))
 
 
-# @app.route('/login-admin', methods=['POST', 'GET'])
-# def login_admin():
-#     if request.method == 'POST':
-#         username = request.form.get("username")
-#         password = request.form.get("password", "")
-#
-#         if adm:
-#             login_user(user=adm)
-#         else:
-#             flash("Wrong password or account type")
-#     return redirect('/admin')
-
-
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login')
 def login():
+    return render_template('login.html')
+
+
+@app.route('/login-admin', methods=['GET', 'POST'])
+def login_admin():
     err_msg = ""
     if request.method == 'POST':
         username = request.form.get("username")
         password = request.form.get("password", "")
-        teach = dao.validate_user_teacher(username=username, password=password)
-        adm = dao.validate_user_admin(username=username, password=password)
-        if teach:
-            login_user(user=teach)
-            return render_template('index.html')
-        else:
-            if adm:
-                login_user(user=adm)
-                # import pdb
-                # pdb.set_trace()
-                flash('Thành công')
-                return redirect("admin")
-            else:
-                flash('Thất bại')
+        user = dao.validate_user_admin(username=username, password=password)
+        if user:
+            login_user(user=user)
+            return redirect("admin")
     return render_template("login.html", err_msg=err_msg)
 
 
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     return render_template("login.html")
+@app.route('/login-teacher', methods=['GET', 'POST'])
+def login_teacher():
+    err_msg = ""
+    if request.method == 'POST':
+        username = request.form.get("username")
+        password = request.form.get("password", "")
+        user = dao.validate_user_teacher(username=username, password=password)
+        if user:
+            login_user(user=user)
+            flash('Thành công')
+            return redirect(url_for("index"))
+    return render_template("login.html", err_msg=err_msg)
 
 
-@app.route('/submit')
-@login_required
-def submit():
-    return render_template("submit.html")
-
-
+# @app.route('/submit')
+# @login_required
+# def submit():
+#     return render_template("submit.html")
+#
+#
 @app.route('/product')
 @login_required
 def product():
@@ -79,7 +72,7 @@ def score():
     return render_template("score.html")
 
 
-@app.route('/logout')
+@app.route('/log-out')
 @login_required
 def logout():
     logout_user()

@@ -16,30 +16,31 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `class_teacher`
+-- Table structure for table `user`
 --
 
-DROP TABLE IF EXISTS `class_teacher`;
+DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `class_teacher` (
-  `class_id` int NOT NULL,
-  `teacher_name` int NOT NULL,
-  PRIMARY KEY (`class_id`,`teacher_name`),
-  KEY `teacher_name` (`teacher_name`),
-  CONSTRAINT `class_teacher_ibfk_1` FOREIGN KEY (`class_id`) REFERENCES `class` (`class_id`),
-  CONSTRAINT `class_teacher_ibfk_2` FOREIGN KEY (`teacher_name`) REFERENCES `teacher` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
+CREATE TABLE `user` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `userName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
+  `firstName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
+  `lastName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
+  `passWord` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
+  `admin_check` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `class_teacher`
+-- Dumping data for table `user`
 --
 
-LOCK TABLES `class_teacher` WRITE;
-/*!40000 ALTER TABLE `class_teacher` DISABLE KEYS */;
-INSERT INTO `class_teacher` VALUES (1,1),(2,1),(3,1),(4,1),(5,1),(5,2),(6,2),(7,2),(8,2),(9,2);
-/*!40000 ALTER TABLE `class_teacher` ENABLE KEYS */;
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'admin','Nam','Trần Phương','202cb962ac59075b964b07152d234b70',1),(2,'nha','Nhã','Nguyễn Thanh','202cb962ac59075b964b07152d234b70',0),(3,'thinh','Thịnh','Hồ Hoàng Hưng','202cb962ac59075b964b07152d234b70',0);
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -51,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-09-17 20:16:57
+-- Dump completed on 2020-09-17 20:17:01

@@ -1,8 +1,9 @@
 import hashlib
 import json
 import os
+
 from app import app
-from app.models import Teacher, AdminAll
+from app.models import User
 
 
 def read_categories():
@@ -37,19 +38,19 @@ def read_products(category_id=0, keyword=None, from_price=None, to_price=None):
         return products
 
 
-def validate_user_teacher(username, password):
+def validate_user_admin(username, password):
     hashpass = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())
-    user = Teacher.query.filter(Teacher.userName == username.strip(),
-                                Teacher.passWord == hashpass).first()
+    user = User.query.filter(User.userName == username.strip(),
+                             User.passWord == hashpass).first()
     if user:
         return user
     return None
 
 
-def validate_user_admin(username, password):
+def validate_user_teacher(username, password):
     hashpass = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())
-    user = AdminAll.query.filter(AdminAll.userName == username.strip(),
-                                 AdminAll.passWord == hashpass).first()
+    user = User.query.filter(User.userName == username.strip(),
+                             User.passWord == hashpass).first()
     if user:
         return user
     return None

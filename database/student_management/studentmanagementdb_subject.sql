@@ -23,11 +23,12 @@ DROP TABLE IF EXISTS `subject`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `subject` (
-  `subject_id` int NOT NULL AUTO_INCREMENT,
-  `subject_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
-  PRIMARY KEY (`subject_id`),
+  `id` int NOT NULL AUTO_INCREMENT,
+  `subject_id` int NOT NULL,
+  `subject_name` varchar(50) COLLATE utf8mb4_vietnamese_ci NOT NULL,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `subject_id` (`subject_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -36,6 +37,7 @@ CREATE TABLE `subject` (
 
 LOCK TABLES `subject` WRITE;
 /*!40000 ALTER TABLE `subject` DISABLE KEYS */;
+INSERT INTO `subject` VALUES (1,201,'Toán'),(2,202,'Lý'),(3,203,'Hóa'),(4,204,'Sinh'),(5,205,'Văn'),(6,206,'Sử'),(7,207,'Địa'),(8,208,'Thể dục');
 /*!40000 ALTER TABLE `subject` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -48,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-09-16 20:35:04
+-- Dump completed on 2020-09-17 20:17:05

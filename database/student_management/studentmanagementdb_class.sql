@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `class`;
 CREATE TABLE `class` (
   `class_id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
-  `grade_id` int NOT NULL,
+  `grade_id` int DEFAULT NULL,
   PRIMARY KEY (`class_id`),
   UNIQUE KEY `class_id` (`class_id`),
   KEY `grade_id` (`grade_id`),
@@ -39,7 +39,7 @@ CREATE TABLE `class` (
 
 LOCK TABLES `class` WRITE;
 /*!40000 ALTER TABLE `class` DISABLE KEYS */;
-INSERT INTO `class` VALUES (1,'10A1',110),(2,'10A2',110),(3,'10A3',110),(4,'10A4',110),(5,'11A1',111),(6,'11A2',111),(7,'11A3',111),(8,'12A1',112),(9,'12A2',112);
+INSERT INTO `class` VALUES (1,'10A1',1),(2,'10A2',1),(3,'10A3',1),(4,'10A4',1),(5,'11A1',2),(6,'11A2',2),(7,'11A3',2),(8,'12A1',3),(9,'12A2',3);
 /*!40000 ALTER TABLE `class` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-09-16 20:35:03
+-- Dump completed on 2020-09-17 20:16:58
