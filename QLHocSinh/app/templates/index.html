@@ -235,25 +235,58 @@
               }
           </style>
           <script>
-            function searchFunction() {
-              // Declare variables
-              var input, filter, ul, li, a, i, txtValue;
-              input = document.getElementById('search');
-              filter = input.value.toUpperCase();
-              ul = document.getElementById("student");
-              li = ul.getElementsByTagName('tr');
+             <!-- Table điểm -->
+            $(document).ready(function(){
+                // Activate tooltip
+                $('[data-toggle="tooltip"]').tooltip();
 
-              // Loop through all list items, and hide those who don't match the search query
-              for (i = 0; i < li.length; i++) {
-                a = li[i].getElementsByTagName("a")[0];
-                txtValue = a.textContent || a.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                  li[i].style.display = "";
-                } else {
-                  li[i].style.display = "none";
-                }
-              }
-            }
+                // Select/Deselect checkboxes
+                var checkbox = $('table tbody input[type="checkbox"]');
+                $("#selectAll").click(function(){
+                    if(this.checked){
+                        checkbox.each(function(){
+                            this.checked = true;
+                        });
+                    } else{
+                        checkbox.each(function(){
+                            this.checked = false;
+                        });
+                    }
+                });
+                checkbox.click(function(){
+                    if(!this.checked){
+                        $("#selectAll").prop("checked", false);
+                    }
+                });
+            });
+
+
+            //delete
+            $(document).on("click", ".delete", function(){
+                $(this).parents("tr").remove();
+                $(".add-new").removeAttr("disabled");
+            });
+
+
+            $(document).ready(function(){
+                // Activate tooltips
+                $('[data-toggle="tooltip"]').tooltip();
+
+                // Filter table rows based on searched term
+                $("#search").on("keyup", function() {
+                    var term = $(this).val().toLowerCase();
+                    $("table tbody tr").each(function(){
+                        $row = $(this);
+                        var name = $row.find("td:nth-child(2)").text().toLowerCase();
+                        console.log(name);
+                        if(name.search(term) < 0){
+                            $row.hide();
+                        } else{
+                            $row.show();
+                        }
+                    });
+                });
+            });
           </script>
       {% endblock %}
         <!-- Table điểm -->
