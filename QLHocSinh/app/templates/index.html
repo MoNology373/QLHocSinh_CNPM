@@ -2,9 +2,9 @@
 {% block title %}Information{% endblock %}
 {% block content %}
     {% if current_user.is_authenticated %}
-        <h1>WELCOME</h1>
-        <h2>{{ current_user.userName }}</h2>
-        <a href="logout" input type="button" id="myBtnLogOut" title="Log out">Log out</a>
+<!--        <h1>WELCOME</h1>-->
+<!--        <h2>{{ current_user.userName }}</h2>-->
+<!--        <a href="logout" input type="button" id="myBtnLogOut" title="Log out">Log out</a>-->
     {% else %}
         {% include 'login.html' %}
     {% endif %}
