@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `subject`;
 CREATE TABLE `subject` (
   `id` int NOT NULL AUTO_INCREMENT,
   `subject_id` int NOT NULL,
-  `subject_name` varchar(50) COLLATE utf8mb4_vietnamese_ci NOT NULL,
+  `subject_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `subject_id` (`subject_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
@@ -50,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-09-18 15:24:09
+-- Dump completed on 2020-09-18 19:17:14

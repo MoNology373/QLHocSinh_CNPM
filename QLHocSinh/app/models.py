@@ -46,7 +46,8 @@ class AdminAll(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     admin_id = Column(Integer, ForeignKey(User.id))
     # Quản lí Khối
-    grades = relationship('Grade', backref='admin', lazy=True)
+    grades = relationship('Grade', backref='admin in charge', lazy=True)
+    rules = relationship('Rule', backref='admin created', lazy=True)
     #
 
     def get_id(self):
@@ -150,11 +151,14 @@ class_teacher = db.Table('class_teacher',
                                 primary_key=True))
 
 
-#
-#
-#
-#
-#
+class Rule(db.Model):
+    __tablename__="rule"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    rule_name = Column(String(50))
+    content = Column(String(500), nullable=False)
+    admin_id = Column(Integer, ForeignKey(AdminAll.id, ondelete='CASCADE'))
+
+
 class AuthenticatedModelView(ModelView):
     def is_accessible(self):
         return current_user.is_authenticated and current_user.admin_check == 1
@@ -220,21 +224,25 @@ class SemesterView(AuthenticatedModelView):
 
 class UserView(AuthenticatedModelView):
     column_display_all_relations = False
+    column_exclude_list = 'passWord'
+
+
+class RuleView(AuthenticatedModelView):
     pass
 
 
-admin.add_view(UserView(User,db.session))
+admin.add_view(UserView(User, db.session))
 admin.add_view(TeacherView(Teacher, db.session))
 admin.add_view(AdminView(AdminAll, db.session))
 #
 admin.add_view(GradeView(Grade, db.session))
 admin.add_view(ClassView(Class, db.session))
 admin.add_view(StudentView(Student, db.session))
-#
+
 admin.add_view(SubjectView(Subject, db.session))
 admin.add_view(SemesterView(Semester, db.session))
 admin.add_view(ScoreView(Score, db.session))
-
+admin.add_view(RuleView(Rule, db.session))
 admin.add_view(LogOutView(name='Log out'))
 
 if __name__ == "__main__":

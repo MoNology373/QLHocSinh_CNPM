@@ -92,7 +92,7 @@ def login_admin():
     if request.method == 'POST':
         username = request.form.get("username")
         password = request.form.get("password", "")
-        user = dao.validate_user_admin(username=username, password=password)
+        user = dao.validate_user(username=username, password=password)
         if user:
             login_user(user=user)
             return redirect("admin")
@@ -105,7 +105,7 @@ def login_teacher():
     if request.method == 'POST':
         username = request.form.get("username")
         password = request.form.get("password", "")
-        user = dao.validate_user_teacher(username=username, password=password)
+        user = dao.validate_user(username=username, password=password)
         if user:
             login_user(user=user)
             return redirect(url_for("index"))
