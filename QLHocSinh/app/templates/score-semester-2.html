@@ -1,5 +1,5 @@
-{% extends 'base/base.html' %}
-{% block title %}Danh sách học sinh{% endblock %}
+{% extends "base/base.html" %}
+{% block title %}Bảng điểm{% endblock %}
 {% block content %}
     {% if current_user.is_authenticated %}
       {% block script %}
@@ -277,7 +277,7 @@
                     var term = $(this).val().toLowerCase();
                     $("table tbody tr").each(function(){
                         $row = $(this);
-                        var name = $row.find("td:nth-child(3)").text().toLowerCase();
+                        var name = $row.find("td:nth-child(6)").text().toLowerCase();
                         console.log(name);
                         if(name.search(term) < 0){
                                 $row.hide();
@@ -299,8 +299,8 @@
                   <h2>Quản lí<b> học sinh</b></h2>
                 </div>
               </div>
-              <a href="/score-semester-2">
-                <button type="button" class="btn btn-danger">Bảng điểm học kì 2</button>
+              <a href="/">
+                <button type="button" class="btn btn-danger">Danh sách học sinh</button>
               </a>
               <a href="/score-semester-1">
                 <button type="button" class="btn btn-danger">Bảng điểm học kì 1</button>
@@ -311,7 +311,7 @@
                 <div class="search-wrapper col-4">
                   <div class="search-box">
                       <div class="input-group">
-                          <input type="text" onkeyup="searchFunction()" id="search" class="form-control" placeholder="Tìm theo tên">
+                          <input type="text" onkeyup="searchFunction()" id="search" class="form-control" placeholder="Tìm theo môn">
                           <!-- <span class="input-group-addon bg-white text-dark pt-1 pr-2 rounded-right"><i class="material-icons">&#xE8B6;</i></span> -->
                       </div>
                   </div>
@@ -325,26 +325,28 @@
                   <th>Student ID</th>
                   <th>Last name</th>
                   <th>First name</th>
-                  <th>Gender</th>
-                  <th>Date of Birth</th>
-                  <th>Email</th>
-                  <th>Address</th>
                   <th>Class</th>
+                  <th>Semester</th>
+                  <th>Subject</th>
+                  <th>Fifteen-minute score</th>
+                  <th>Period score</th>
+                  <th>Final score</th>
                 </tr>
               </thead>
     <!--            Kết thúc tiêu đề bảng-->
     <!--            Thành phần bảng-->
              <tbody>
-                {% for data in studentList %}
+                {% for data in scoreList %}
                     <tr>
                       <td>{{ data.student_id }}</td>
                       <td>{{ data.lastName }}</td>
                       <td>{{ data.firstName }}</td>
-                      <td>{{ data.gender }}</td>
-                      <td>{{ data.date_of_birth }}</td>
-                      <td>{{ data.email }}</td>
-                      <td>{{ data.address }}</td>
                       <td>{{ data.name }}</td>
+                      <td>{{ data.semester_name }}</td>
+                      <td>{{ data.subject_name }}</td>
+                      <td>{{ data.score_fifteen }}</td>
+                      <td>{{ data.score_period }}</td>
+                      <td>{{ data.score_final }}</td>
                     </tr>
                 {% endfor %}
              </tbody>
