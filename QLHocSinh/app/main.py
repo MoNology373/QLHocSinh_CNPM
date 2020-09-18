@@ -71,6 +71,7 @@ def score_semester_2():
     #                 Score.score_fifteen, Score.score_period, Score.score_final, Class.name)
     return render_template("score-semester-2.html", scoreList=scoreList)
 
+
 @login.user_loader
 def user_load(user_id):
     return User.query.get(user_id)
@@ -112,16 +113,10 @@ def login_teacher():
     return render_template("login.html", err_msg=err_msg)
 
 
-# @app.route('/submit')
-# @login_required
-# def submit():
-#     return render_template("submit.html")
-#
-#
-# @app.route('/product')
-# @login_required
-# def product():
-#     return render_template("product.html")
+@app.route('/admin')
+@login_required
+def to_admin():
+    return redirect('admin')
 
 
 @app.route('/log-out')

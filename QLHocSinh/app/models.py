@@ -186,11 +186,18 @@ class LogOutView(AuthenticatedBaseView):
         return redirect('/login')
 
 
+class ToTeacherView(AuthenticatedBaseView):
+    @expose('/')
+    def to_admin(self):
+        return redirect('/')
+
+
 class TeacherView(AuthenticatedModelView):
     pass
 
 
 class AdminView(AuthenticatedModelView):
+    column_display_all_relations = False
     can_create = False
     can_edit = True
     can_delete = False
@@ -231,9 +238,9 @@ class RuleView(AuthenticatedModelView):
     pass
 
 
-admin.add_view(UserView(User, db.session))
-admin.add_view(TeacherView(Teacher, db.session))
-admin.add_view(AdminView(AdminAll, db.session))
+admin.add_view(UserView(User, db.session, category="Users"))
+admin.add_view(TeacherView(Teacher, db.session, category="Users"))
+admin.add_view(AdminView(AdminAll, db.session, category="Users"))
 #
 admin.add_view(GradeView(Grade, db.session))
 admin.add_view(ClassView(Class, db.session))
@@ -244,6 +251,6 @@ admin.add_view(SemesterView(Semester, db.session))
 admin.add_view(ScoreView(Score, db.session))
 admin.add_view(RuleView(Rule, db.session))
 admin.add_view(LogOutView(name='Log out'))
-
+admin.add_view(ToTeacherView(name='To teacher view'))
 if __name__ == "__main__":
     db.create_all()
